@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logger</title>
+    <link rel="stylesheet" href="index.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/0.5.12/MinFaker.js"></script>
+    <script src="index.js" defer></script>
+  </head>
+  <body>
+    <div id="logs" role="group" class="logs">
+      <div class="log_step">
+        <div class="div">step 1</div>
+        <div class="div">step 2</div>
+        <div class="div">step 3</div>
+        <div class="div">step 4</div>
+        <div class="div">step 5</div>
+        <div class="div">step 6</div>
+        <div class="div">step 7</div>
+        <div class="div">step 8</div>
+        <div class="div">step 9</div>
+        <div class="div">step 10</div>
+      </div>
+      <div id="log_container" class="log_container">
+        <div class="header">
+          <h2>Step</h2>
+          <form role="search" method="GET" onsubmit="return false">
+            <button type="submit">
+              <span>Submit Search</span>
+            </button>
+            <input aria-label="Search" id="search" type="search" />
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
