@@ -6,7 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Logger</title>
     <link rel="stylesheet" href="index.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/0.5.12/MinFaker.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Faker/0.5.12/MinFaker.js"
+      defer
+    ></script>
     <script src="index.js" defer></script>
   </head>
   <body>
@@ -26,13 +29,24 @@
       <div id="log_container" class="log_container">
         <div class="header">
           <h2>Step</h2>
-          <form role="search" method="GET" onsubmit="return false">
+          <form
+            role="search"
+            class="log_form"
+            method="GET"
+            onsubmit="return false"
+          >
             <button type="submit">
               <span>Submit Search</span>
             </button>
-            <input aria-label="Search" id="search" type="search" />
+            <input
+              aria-label="Search"
+              id="search"
+              type="search"
+              placeholder="Search the logs"
+            />
           </form>
         </div>
+        <div id="log_inner_container" class="log_inner_container"></div>
       </div>
     </div>
   </body>
