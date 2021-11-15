@@ -8,6 +8,10 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -31,9 +35,14 @@ body {
   align-self: flex-start;
 }
 
-.log_step > div {
+.log_step > .stepLink {
+  padding: 10px;
   margin: 10px;
-  background: initial;
+}
+
+.stepLink > a {
+  text-decoration: none;
+  background: inherit;
 }
 
 .logs > .log_container {

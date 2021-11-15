@@ -87,9 +87,30 @@ function addLogLines(data, el) {
 function addStep(stepNo, el) {
   const logDetailsTag = document.createElement("details");
   logDetailsTag.classList.add("log");
-  // if (stepNo === 2) {
-  logDetailsTag.toggleAttribute("open");
-  // }
+  logDetailsTag.setAttribute("id", `step${stepNo}`);
+
+  const obs = createObservers(logDetailsTag);
+
+  // set mutation observer on attribute change
+  const mutObs = new MutationObserver((mutationRecords) => {
+    console.log("setting up");
+    for (const mutationRecord of mutationRecords) {
+      if (mutationRecord.type === "attributes") {
+        if (mutationRecord.attributeName === "open") {
+          if (mutationRecord.target.open) {
+            obs.observe(logDetailsTag);
+          } else {
+            obs.unobserve(logDetailsTag);
+          }
+        }
+      }
+    }
+  });
+
+  mutObs.observe(logDetailsTag, {
+    attributes: true,
+  });
+
   const detailsSummary = document.createElement("summary");
   detailsSummary.textContent = "Step " + stepNo;
   detailsSummary.classList.add("log_summary");
@@ -151,50 +172,39 @@ async function showStepData() {
   }
 }
 
-function showLogsData() {
-  // const { data } = await fetchLogs();
-  // addMockLogs(data.split("\n").slice(0, random).join(""), itemCount);
-  // addMockLogs(Faker.Lorem.sentences(random), itemCount);
-  // addLog(Faker.Lorem.paragraphs(random), itemCount);
-  let itemCount = 0;
-  let offset = 0;
-  for (itemCount = 0; itemCount < heightArr.length; itemCount++) {
-    addLogLines(
-      actionsLogs.split("\n").slice(offset, offset + heightArr[itemCount]),
-      parentStepArr[itemCount]
-    );
-    offset = offset + heightArr[itemCount];
-  }
-}
+// function showLogsData() {
+//   // const { data } = await fetchLogs();
+//   // addMockLogs(data.split("\n").slice(0, random).join(""), itemCount);
+//   // addMockLogs(Faker.Lorem.sentences(random), itemCount);
+//   // addLog(Faker.Lorem.paragraphs(random), itemCount);
+//   let itemCount = 0;
+//   let offset = 0;
+//   for (itemCount = 0; itemCount < heightArr.length; itemCount++) {
+//     addLogLines(
+//       actionsLogs.split("\n").slice(offset, offset + heightArr[itemCount]),
+//       parentStepArr[itemCount]
+//     );
+//     offset = offset + heightArr[itemCount];
+//   }
+// }
 
-function addObservers() {
-  // let itemCount = 0;
-  // for (itemCount = 0; itemCount < heightArr.length; itemCount++) {
-  //   if (itemCount === 1 && parentStepArr[itemCount]) {
-  const allDetails = Array.from(
-    document.querySelectorAll(
-      "details.log[open] > div.log_description > div:nth-child(2)"
-    )
-  );
+function createObservers(target) {
+  if (!target) {
+    return;
+  }
+  target.querySelector("div.log_description > div:nth-child(2)");
   const obs = new IntersectionObserver((entries, observer) => {
     entries.forEach((el) => {
       if (el.isIntersecting) {
         loadMoreData(el.target);
-        observer.unobserve(el.target);
       }
     });
   }, {});
-  allDetails.forEach((el) => {
-    // obs.observe(el.querySelector(".log_description > div"));
-    obs.observe(el);
-  });
-  //   }
-  // }
+
+  return obs;
 }
 
 const logs = document.getElementById("log_inner_container");
-
-const actionsLogs = Faker.Lorem.sentences(100000);
 
 // const logs = document.getElementById("log_container");
 const scrollHeight = getScrollHeight();
@@ -203,8 +213,7 @@ const heightArr = [];
 const detailsDescriptionArr = [];
 
 showStepData();
-showLogsData();
-addObservers();
+// showLogsData();
 
 document.documentElement.scrollTo({
   top: 0,
