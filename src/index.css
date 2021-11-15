@@ -26,8 +26,9 @@ body {
   /* max-height: 100vh; */
 }
 
-.logs > .log_step {
+.logs .log_step {
   flex-basis: 20%;
+  list-style: none;
   position: sticky;
   top: 0;
   background: hsl(210, 13%, 8%);
