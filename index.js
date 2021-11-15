@@ -17,12 +17,31 @@ function toggleKeyUpHandler(e) {
   }
 }
 
+function loadMoreData(el) {
+  if (el) {
+    el.textContent = "Loading...";
+    const tempDiv = document.createElement("div");
+    setTimeout(() => {
+      Faker.Lorem.sentences(50)
+        .split("\n")
+        .forEach((sentence) => {
+          const logLine = document.createElement("div");
+          logLine.classList.add("log_line");
+          logLine.textContent = sentence;
+          tempDiv.appendChild(logLine);
+        });
+      el.insertAdjacentElement("beforebegin", tempDiv);
+      el.textContent = "Show more";
+    }, 2000);
+  }
+}
+
 function removeLogsBatch(detailsDescription) {}
 
 function addLogsBatch(data, detailsDescription) {
   const description_inner1 = document.createElement("div");
-  const description_inner2 = document.createElement("div");
-  const description_inner3 = document.createElement("div");
+  // const description_inner2 = document.createElement("div");
+  // const description_inner3 = document.createElement("div");
 
   description_inner1.style.height = "auto";
   // description_inner2.style.height = "1000px";
@@ -35,9 +54,27 @@ function addLogsBatch(data, detailsDescription) {
     description_inner1.appendChild(logLine);
     // detailsDescription.appendChild(logLine);
   });
+
+  const showMoreContainer = document.createElement("div");
+  showMoreContainer.setAttribute("role", "button");
+  showMoreContainer.setAttribute("tabindex", "0");
+  showMoreContainer.addEventListener("keyup", (e) => {
+    e.preventDefault();
+    if (e.key === "Enter") {
+      loadMoreData(e.target);
+    }
+  });
+  showMoreContainer.textContent = "Show more";
+  showMoreContainer.addEventListener("click", (e) => {
+    e.preventDefault();
+    loadMoreData(e.target);
+  });
+  showMoreContainer.style.textAlign = "center";
+
   detailsDescription.appendChild(description_inner1);
-  detailsDescription.appendChild(description_inner2);
-  detailsDescription.appendChild(description_inner3);
+  detailsDescription.appendChild(showMoreContainer);
+  // detailsDescription.appendChild(description_inner2);
+  // detailsDescription.appendChild(description_inner3);
 }
 
 function addLogLines(data, el) {
@@ -50,19 +87,9 @@ function addLogLines(data, el) {
 function addStep(stepNo, el) {
   const logDetailsTag = document.createElement("details");
   logDetailsTag.classList.add("log");
-  if (stepNo === 2) {
-    logDetailsTag.toggleAttribute("open");
-    const obs = new IntersectionObserver(
-      (entries) => {
-        console.log(entries);
-      },
-      {
-        root: logs,
-        threshold: [0, 0.5, 1],
-      }
-    );
-    obs.observe(logDetailsTag);
-  }
+  // if (stepNo === 2) {
+  logDetailsTag.toggleAttribute("open");
+  // }
   const detailsSummary = document.createElement("summary");
   detailsSummary.textContent = "Step " + stepNo;
   detailsSummary.classList.add("log_summary");
@@ -115,10 +142,10 @@ function getScrollHeight() {
 }
 
 async function showStepData() {
-  const TOTAL_ITEMS = 100;
+  const TOTAL_ITEMS = 10;
   let itemCount = 0;
   for (itemCount; itemCount < TOTAL_ITEMS; itemCount++) {
-    let random = 30;
+    let random = 50;
     heightArr.push(random);
     parentStepArr.push(addStep(itemCount + 1, logs));
   }
@@ -140,12 +167,32 @@ function showLogsData() {
   }
 }
 
-function onScroll() {
-  // addLogsBatch(Faker.Lorem.sentences(heightArr[0]));
+function addObservers() {
+  // let itemCount = 0;
+  // for (itemCount = 0; itemCount < heightArr.length; itemCount++) {
+  //   if (itemCount === 1 && parentStepArr[itemCount]) {
+  const allDetails = Array.from(
+    document.querySelectorAll(
+      "details.log[open] > div.log_description > div:nth-child(2)"
+    )
+  );
+  const obs = new IntersectionObserver((entries, observer) => {
+    entries.forEach((el) => {
+      if (el.isIntersecting) {
+        loadMoreData(el.target);
+        observer.unobserve(el.target);
+      }
+    });
+  }, {});
+  allDetails.forEach((el) => {
+    // obs.observe(el.querySelector(".log_description > div"));
+    obs.observe(el);
+  });
+  //   }
+  // }
 }
 
 const logs = document.getElementById("log_inner_container");
-document.addEventListener("scroll", onScroll);
 
 const actionsLogs = Faker.Lorem.sentences(100000);
 
@@ -157,6 +204,7 @@ const detailsDescriptionArr = [];
 
 showStepData();
 showLogsData();
+addObservers();
 
 document.documentElement.scrollTo({
   top: 0,
