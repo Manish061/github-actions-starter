@@ -10,7 +10,7 @@ export class LogsDetailsElement extends HTMLElement {
 
   update() {
     this.innerHTML = `
-          <details class="log">
+          <details class="log" id=${this.step}>
             <summary class="log_summary">Step ${this.step}</summary>
             <div class="log_description">
             </div>

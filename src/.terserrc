@@ -1,1 +1,4 @@
-{ keep_classnames: /Element$/ }
+
+{
+    "mangle": false
+}
